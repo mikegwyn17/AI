@@ -14,7 +14,7 @@ def create_board ():
 				else:
 					# if row cell is 0, set it equal to all possible values 
 					if (txt is '0'):
-						txt = '0123456789'
+						txt = '123456789'
 					column_count += 1
 					coordinate = (row_count, column_count)
 					sudoku_board.update({coordinate: txt})
@@ -125,11 +125,27 @@ def create_tuples (row, column):
 
 # function used to solve a row, column, or block of sudoku by making sure only one of each number is used in the block once
 def solve (sudoku_board, block):
-	
+	filled = []
+	not_filled = []
+	return_string = ''
+	for cell in block:
+		if (len(cell) == 1):
+			filled.append(cell)
+		else:
+			not_filled.append(cell)
+
+	for cell in not_filled:
+		count = 0
+		while (count < len(filled)):
+			if filled[count] in cell:
+				return_string += filled[count]
+			count += 1
+	return return_string
 
 
 #Main method of the sudoku solver
 sudoku_board = create_board()
+
 # print_board(sudoku_board)
 # test = create_tuples(1,0)
 # for taco in test:
@@ -138,8 +154,10 @@ sudoku_board = create_board()
 # for element in test_array:
 # 	print (element)
 test_array = find_block(sudoku_board, (9,9))
-for element in test_array:
-	print (element)
+# for element in test_array:
+# 	print (element)
 
+solve_string = solve(sudoku_board, test_array[0])
+print (solve_string)
 
 
