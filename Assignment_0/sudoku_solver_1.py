@@ -123,28 +123,74 @@ def create_tuples (row, column):
 
 	return array
 
+def solver(block, sudoku_board, coordinate):
+	contents = sudoku_board.get(coordinate)
+	for cell in block:
+		if len(cell) == 1:
+			if cell[0] in contents:
+				# print (cell[0])
+				contents = contents.replace(cell[0], '')
+				sudoku_board.update({coordinate: contents})
+				# print (sudoku_board.get(coordinate))
+
 # function used to solve a row, column, or block of sudoku by making sure only one of each number is used in the block once
-def solve (sudoku_board, block):
-	filled = []
-	not_filled = []
-	return_string = ''
+def solve (sudoku_board, coordinate):
+	contents = sudoku_board.get(coordinate)
+	column = find_column(sudoku_board, coordinate)
+	row = find_row(sudoku_board, coordinate)
+	block = find_block(sudoku_board, coordinate)
+	solver(column, sudoku_board, coordinate)
+	solver(row, sudoku_board, coordinate)
+	solver(block, sudoku_board, coordinate)
+
+def check_board (sudoku_board):
+    for k, v in sorted(sudoku_board.items()):
+    	check = check_block(sudoku_board, k)
+    	if not(check):
+    		return False
+    		
+    return True
+    	
+
+def check_block (sudoku_board, coordinate):
+	row = find_row(sudoku_board, coordinate)
+	column = find_column(sudoku_board, coordinate)
+	block = find_block(sudoku_board, coordinate)
+
+	row_check = check(row)
+	column_check = check(column)
+	block_check = check(block)
+
+	if (row_check and column_check and block_check):
+		return True
+	else:
+		return False
+
+def check (block):
+	count = '123456789'
 	for cell in block:
 		if (len(cell) == 1):
-			filled.append(cell)
+			if cell in count:
+				count = count.replace(cell[0], 'x')
+
 		else:
-			not_filled.append(cell)
+			return False
 
-	for cell in not_filled:
-		count = 0
-		while (count < len(filled)):
-			if filled[count] in cell:
-				return_string += filled[count]
-			count += 1
-	return return_string
-
+	if count == 'xxxxxxxxx':
+		return True
+	else:
+		return False
 
 #Main method of the sudoku solver
 sudoku_board = create_board()
+# print_board(sudoku_board)
+while not(check_board(sudoku_board)):
+	for k, v in sorted(sudoku_board.items()):
+		if (len(v) != 1):
+			solve(sudoku_board, k)
+print_board(sudoku_board)
+
+# print (check_block(sudoku_board, (1,1)))
 
 # print_board(sudoku_board)
 # test = create_tuples(1,0)
@@ -153,11 +199,12 @@ sudoku_board = create_board()
 # test_array = find_column(sudoku_board, (1,1))
 # for element in test_array:
 # 	print (element)
-test_array = find_block(sudoku_board, (9,9))
+# test_array = find_block(sudoku_board, (9,9))
 # for element in test_array:
 # 	print (element)
 
-solve_string = solve(sudoku_board, test_array[0])
-print (solve_string)
+# solve(sudoku_board, (1,1))
+
+
 
 
